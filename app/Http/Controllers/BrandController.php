@@ -13,8 +13,6 @@ class BrandController extends Controller
      */
     public function index(Request $request)
     {
-        //$brands = Brand::all();
-        //$brands = Brand::latest()->get()
         $pagerow = $request->pagerow ?? 2;
         $brands = Brand::latest()->paginate($pagerow);
         return view('dashboard.brand.list',compact('brands','pagerow'));

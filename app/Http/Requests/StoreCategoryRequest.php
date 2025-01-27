@@ -22,7 +22,8 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|max:255|min:3|unique:categories',
+            'description' => 'nullable|max:500'
         ];
     }
 }

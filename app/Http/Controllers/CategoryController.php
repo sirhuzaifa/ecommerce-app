@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
@@ -11,9 +11,11 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return "Category index";
+        $pagerow = $request->pagerow ?? 2;
+        $categories = Category::latest()->paginate($pagerow);
+        return view('dashboard.category.list',compact('categories','pagerow'));
     }
 
     /**
@@ -29,9 +31,9 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        $data = $request->except('_token');
+        $data=$request->except('_token');
         Category::create($data);
-        return back();
+       return back();
     }
 
     /**
@@ -47,7 +49,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return "Category edit";
+        return view('dashboard.category.edit',compact('category'));
     }
 
     /**
@@ -55,7 +57,9 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        return "Category update";
+        $data = $request->except('_method','_token');
+        $category->update($data);
+        return back();
     }
 
     /**
@@ -63,6 +67,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        return "Category destroy";
+        $category->delete();
+        return back();
     }
 }
