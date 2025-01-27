@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Http\Request;
 use App\Models\Brand;
 use App\Http\Requests\StoreBrandRequest;
 use App\Http\Requests\UpdateBrandRequest;
@@ -11,9 +11,13 @@ class BrandController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return 'Brand Index';
+        //$brands = Brand::all();
+        //$brands = Brand::latest()->get()
+        $pagerow = $request->pagerow ?? 2;
+        $brands = Brand::latest()->paginate($pagerow);
+        return view('dashboard.brand.list',compact('brands','pagerow'));
     }
 
     /**
@@ -47,7 +51,7 @@ class BrandController extends Controller
      */
     public function edit(Brand $brand)
     {
-        //
+        return view('dashboard.brand.edit',compact('brand'));
     }
 
     /**
@@ -55,7 +59,9 @@ class BrandController extends Controller
      */
     public function update(UpdateBrandRequest $request, Brand $brand)
     {
-        //
+        $data = $request->except('_method','_token');
+        $brand->update($data);
+        return back();
     }
 
     /**
@@ -63,6 +69,7 @@ class BrandController extends Controller
      */
     public function destroy(Brand $brand)
     {
-        //
+       $brand->delete();
+       return back();
     }
 }
